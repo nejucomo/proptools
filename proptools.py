@@ -184,17 +184,24 @@ class TypedPropertyTests (unittest.TestCase):
 class SetOncePropertyTests (unittest.TestCase):
     def setUp(self):
         class C (object):
-            p = SetOnceProperty()
+            nodef = SetOnceProperty()
+            withdef = SetOnceProperty('the default value')
 
         self.C = C
         self.obj = C()
 
-    def test_set_once(self):
-        self.assertRaises(AttributeError, getattr, self.obj, 'p')
-        self.obj.p = 42
-        self.assertEqual(42, self.obj.p)
-        self.assertRaises(AttributeError, setattr, self.obj, 'p', "foo")
-        self.assertEqual(42, self.obj.p)
+    def test_set_once_common(self):
+        for attrname in ['nodef', 'withdef']:
+            setattr(self.obj, attrname, 42)
+            self.assertEqual(42, getattr(self.obj, attrname))
+            self.assertRaises(AttributeError, setattr, self.obj, attrname, "foo")
+            self.assertEqual(42, getattr(self.obj, attrname))
+
+    def test_not_set_no_default_AttributeError(self):
+        self.assertRaises(AttributeError, getattr, self.obj, 'nodef')
+
+    def test_not_set_with_default(self):
+        self.assertEqual('the default value', self.obj.withdef)
 
 
 
