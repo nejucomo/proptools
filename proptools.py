@@ -35,6 +35,9 @@ class LazyPropertyTests (unittest.TestCase):
         self.assertEqual(1, self.i.foo)
         self.assertEqual(1, self.i.foo)
 
+    def test_readonly(self):
+        self.assertRaises(AttributeError, setattr, self.i, 'foo', 42)
+
 
 
 if __name__ == '__main__':
