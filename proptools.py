@@ -8,12 +8,15 @@ class LazyProperty (property):
         self._maker = maker
 
     def __get__(self, instance, _cls):
-        try:
-            return self._values[instance]
-        except KeyError:
-            value = self._maker(instance)
-            self._values[instance] = value
-            return value
+        if instance is None:
+            return self
+        else:
+            try:
+                return self._values[instance]
+            except KeyError:
+                value = self._maker(instance)
+                self._values[instance] = value
+                return value
 
 
 class TypedProperty (property):
@@ -22,10 +25,13 @@ class TypedProperty (property):
         self.type = type
 
     def __get__(self, instance, _cls):
-        try:
-            return self._values[instance]
-        except KeyError:
-            raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
+        if instance is None:
+            return self
+        else:
+            try:
+                return self._values[instance]
+            except KeyError:
+                raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
 
     def __set__(self, instance, value):
         if isinstance(value, self.type):
