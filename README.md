@@ -1,5 +1,8 @@
-= proptools =
+proptools
+=========
 
-Three useful python property subclasses: `LazyProperty`, `TypedProperty`, and `SetOnceProperty`
+Three useful python property subclasses: `LazyProperty`, `TypedProperty`,
+and `SetOnceProperty`
 
-See the docstrings for examples and API.
+See the [docstrings](https://github.com/nejucomo/proptools/blob/master/proptools.py#L3)
+for examples and API.
