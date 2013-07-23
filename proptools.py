@@ -60,7 +60,13 @@ class TypedProperty (StatefulPropertyBase):
 
 
 class SetOnceProperty (StatefulPropertyBase):
-    pass
+    def __set__(self, instance, value):
+        try:
+            value = self._values[instance]
+        except KeyError:
+            self._values[instance] = value
+        else:
+            raise AttributeError('SetOnceProperty already set to: %r' % (value,))
 
 
 
