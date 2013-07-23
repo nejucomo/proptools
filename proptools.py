@@ -8,10 +8,12 @@ Example:
 ...
 ...     name = SetOnceProperty()
 ...
+...     title = SetOnceProperty(default='Ms.')
+...
 ...     @LazyProperty
 ...     def greeting(self):
 ...         print 'Computing the greeting.'
-...         return "Hello, " + self.name
+...         return 'Hello, ' + self.title + ' ' + self.name
 ...
 ...
 >>> obj = C()
@@ -30,11 +32,20 @@ TypeError: Property values must be instances of <type 'int'>; not <type 'str'>
 Traceback (most recent call last):
   File "<stdin>", line 1, in ?
 AttributeError: SetOnceProperty already set to: 'Charlie'
+>>> obj.title
+'Ms.'
+>>> obj.title = 'Herr Professor'
+>>> obj.title
+'Herr Professor'
+>>> obj.title = 'De-Indupinator'
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+AttributeError: SetOnceProperty already set to: 'Herr Professor'
 >>> obj.greeting
 Computing the greeting.
-'Hello, Charlie'
+'Hello, Herr Professor Charlie'
 >>> obj.greeting
-'Hello, Charlie'
+'Hello, Herr Professor Charlie'
 """
 
 
@@ -111,6 +122,7 @@ class SetOnceProperty (StatefulPropertyBase):
     _NoDefault = object() # Sentinel
 
     def __init__(self, default=_NoDefault):
+        """If a default is given, the property has the default value unless it is otherwise assigned."""
         StatefulPropertyBase.__init__(self)
         self._default = default
 
