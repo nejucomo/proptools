@@ -59,6 +59,10 @@ class TypedProperty (StatefulPropertyBase):
             raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
 
 
+class SetOnceProperty (StatefulPropertyBase):
+    pass
+
+
 
 # unittests:
 class LazyPropertyTests (unittest.TestCase):
@@ -121,6 +125,22 @@ class TypedPropertyTests (unittest.TestCase):
 
     def test_classprop(self):
         self.assertIsInstance(self.C.i, TypedProperty)
+
+
+class SetOncePropertyTests (unittest.TestCase):
+    def setUp(self):
+        class C (object):
+            p = SetOnceProperty()
+
+        self.C = C
+        self.obj = C()
+
+    def test_set_once(self):
+        self.assertRaises(AttributeError, getattr, self.obj, 'p')
+        self.obj.p = 42
+        self.assertEqual(42, self.obj.p)
+        self.assertRaises(AttributeError, setattr, self.obj, 'p', "foo")
+        self.assertEqual(42, self.obj.p)
 
 
 
