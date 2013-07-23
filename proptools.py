@@ -1,15 +1,17 @@
+__all__ = ['LazyProperty', 'TypedProperty']
+
 import unittest
 from weakref import WeakKeyDictionary
 
 
-class StatefulProperty (property):
+class StatefulPropertyBase (property):
     """Stores property values in an internally tracked WeakKeyDictionary, keyed on the instance.
 
     It is mainly useful as a base class, or when for whatever reason
     you want a property that is not stored in the instance __dict__.
 
-    When accessed from a class, a StatefulProperty returns the
-    StatefulProperty instance.
+    When accessed from a class, a StatefulPropertyBase returns the
+    StatefulPropertyBase instance.
     """
     def __init__(self):
         self._values = WeakKeyDictionary()
@@ -28,9 +30,9 @@ class StatefulProperty (property):
         raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
 
 
-class LazyProperty (StatefulProperty):
+class LazyProperty (StatefulPropertyBase):
     def __init__(self, maker):
-        StatefulProperty.__init__(self)
+        StatefulPropertyBase.__init__(self)
         self.maker = maker
 
     def _handleMissingValue(self, instance):
@@ -39,9 +41,9 @@ class LazyProperty (StatefulProperty):
         return value
 
 
-class TypedProperty (StatefulProperty):
+class TypedProperty (StatefulPropertyBase):
     def __init__(self, type):
-        StatefulProperty.__init__(self)
+        StatefulPropertyBase.__init__(self)
         self.type = type
 
     def __set__(self, instance, value):
