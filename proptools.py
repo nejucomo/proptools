@@ -63,6 +63,9 @@ class LazyPropertyTests (unittest.TestCase):
     def test_readonly(self):
         self.assertRaises(AttributeError, setattr, self.i, 'foo', 42)
 
+    def test_classprop(self):
+        self.assertIsInstance(self.C.foo, LazyProperty)
+
 
 class TypedPropertyTests (unittest.TestCase):
     def setUp(self):
@@ -96,6 +99,9 @@ class TypedPropertyTests (unittest.TestCase):
         del_i()
 
         self.assertRaises(AttributeError, del_i)
+
+    def test_classprop(self):
+        self.assertIsInstance(self.C.i, TypedProperty)
 
 
 
