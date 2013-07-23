@@ -2,36 +2,47 @@ import unittest
 from weakref import WeakKeyDictionary
 
 
-class LazyProperty (property):
+class StatefulProperty (property):
+    """Stores property values in an internally tracked WeakKeyDictionary, keyed on the instance.
+
+    It is mainly useful as a base class, or when for whatever reason
+    you want a property that is not stored in the instance __dict__.
+
+    When accessed from a class, a StatefulProperty returns the
+    StatefulProperty instance.
+    """
+    def __init__(self):
+        self._values = WeakKeyDictionary()
+
+    def __get__(self, instance, _cls):
+        if instance is None:
+            return self
+        else:
+            try:
+                return self._values[instance]
+            except KeyError:
+                return self._handleMissingValue(instance)
+
+    def _handleMissingValue(self, instance):
+        """Override this to customize missing value behavior."""
+        raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
+
+
+class LazyProperty (StatefulProperty):
     def __init__(self, maker):
-        self._values = WeakKeyDictionary()
-        self._maker = maker
+        StatefulProperty.__init__(self)
+        self.maker = maker
 
-    def __get__(self, instance, _cls):
-        if instance is None:
-            return self
-        else:
-            try:
-                return self._values[instance]
-            except KeyError:
-                value = self._maker(instance)
-                self._values[instance] = value
-                return value
+    def _handleMissingValue(self, instance):
+        value = self.maker(instance)
+        self._values[instance] = value
+        return value
 
 
-class TypedProperty (property):
+class TypedProperty (StatefulProperty):
     def __init__(self, type):
-        self._values = WeakKeyDictionary()
+        StatefulProperty.__init__(self)
         self.type = type
-
-    def __get__(self, instance, _cls):
-        if instance is None:
-            return self
-        else:
-            try:
-                return self._values[instance]
-            except KeyError:
-                raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
 
     def __set__(self, instance, value):
         if isinstance(value, self.type):
