@@ -108,6 +108,18 @@ class TypedProperty (StatefulPropertyBase):
 class SetOnceProperty (StatefulPropertyBase):
     """A property that can be assigned only once; subsequent assignements raise AttributeError."""
 
+    _NoDefault = object() # Sentinel
+
+    def __init__(self, default=_NoDefault):
+        StatefulPropertyBase.__init__(self)
+        self._default = default
+
+    def _handleMissingValue(self, instance):
+        if self._default is self._NoDefault:
+            StatefulPropertyBase._handleMissingValue(self, instance)
+        else:
+            return self._default
+
     def __set__(self, instance, value):
         try:
             value = self._values[instance]
