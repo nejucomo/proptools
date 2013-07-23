@@ -55,6 +55,7 @@ import unittest
 from weakref import WeakKeyDictionary
 
 
+
 class StatefulPropertyBase (property):
     """Stores property values in an internally tracked WeakKeyDictionary, keyed on the instance.
 
@@ -81,6 +82,7 @@ class StatefulPropertyBase (property):
         raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
 
 
+
 class LazyProperty (StatefulPropertyBase):
     """A readonly property that's generated from the maker function on first lookup."""
 
@@ -93,6 +95,7 @@ class LazyProperty (StatefulPropertyBase):
         value = self.maker(instance)
         self._values[instance] = value
         return value
+
 
 
 class TypedProperty (StatefulPropertyBase):
@@ -114,6 +117,7 @@ class TypedProperty (StatefulPropertyBase):
             del self._values[instance]
         except KeyError:
             raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
+
 
 
 class SetOnceProperty (StatefulPropertyBase):
@@ -168,6 +172,7 @@ class LazyPropertyTests (unittest.TestCase):
         self.assertIsInstance(self.C.foo, LazyProperty)
 
 
+
 class TypedPropertyTests (unittest.TestCase):
     def setUp(self):
         class C (object):
@@ -203,6 +208,7 @@ class TypedPropertyTests (unittest.TestCase):
 
     def test_classprop(self):
         self.assertIsInstance(self.C.i, TypedProperty)
+
 
 
 class SetOncePropertyTests (unittest.TestCase):
