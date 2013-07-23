@@ -31,7 +31,10 @@ class StatefulPropertyBase (property):
 
 
 class LazyProperty (StatefulPropertyBase):
+    """A readonly property that's generated from the maker function on first lookup."""
+
     def __init__(self, maker):
+        """maker is a function which takes an instance as an argument and returns the property's value."""
         StatefulPropertyBase.__init__(self)
         self.maker = maker
 
@@ -42,7 +45,10 @@ class LazyProperty (StatefulPropertyBase):
 
 
 class TypedProperty (StatefulPropertyBase):
+    """A property that raises TypeError if any assigned value is not an instance of type."""
+
     def __init__(self, type):
+        """type constraints the type of assigned values."""
         StatefulPropertyBase.__init__(self)
         self.type = type
 
@@ -60,6 +66,8 @@ class TypedProperty (StatefulPropertyBase):
 
 
 class SetOnceProperty (StatefulPropertyBase):
+    """A property that can be assigned only once; subsequent assignements raise AttributeError."""
+
     def __set__(self, instance, value):
         try:
             value = self._values[instance]
