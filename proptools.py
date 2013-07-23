@@ -49,7 +49,7 @@ Computing the greeting.
 """
 
 
-__all__ = ['LazyProperty', 'TypedProperty']
+__all__ = ['LazyProperty', 'TypedProperty', 'SetOnceProperty']
 
 import unittest
 from weakref import WeakKeyDictionary
