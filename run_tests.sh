@@ -19,4 +19,5 @@ echo 'Report generated.'
 
 [ "$STATUS" -eq 0 ] || exit $STATUS
 
-exit "$STATUS"
+echo -e '\n=== Running doctests ==='
+exec python -m doctest ./proptools.py

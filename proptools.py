@@ -1,3 +1,43 @@
+"""proptools - A collection of useful property subclasses.
+
+Example:
+>>> from proptools import LazyProperty, TypedProperty, SetOnceProperty
+>>> class C (object):
+...
+...     score = TypedProperty(int)
+...
+...     name = SetOnceProperty()
+...
+...     @LazyProperty
+...     def greeting(self):
+...         print 'Computing the greeting.'
+...         return "Hello, " + self.name
+...
+...
+>>> obj = C()
+>>> obj.score = 42
+>>> obj.score
+42
+>>> obj.score = 37
+>>> obj.score
+37
+>>> obj.score = "banana"
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+TypeError: Property values must be instances of <type 'int'>; not <type 'str'>
+>>> obj.name = "Charlie"
+>>> obj.name = "Johhny"
+Traceback (most recent call last):
+  File "<stdin>", line 1, in ?
+AttributeError: SetOnceProperty already set to: 'Charlie'
+>>> obj.greeting
+Computing the greeting.
+'Hello, Charlie'
+>>> obj.greeting
+'Hello, Charlie'
+"""
+
+
 __all__ = ['LazyProperty', 'TypedProperty']
 
 import unittest
