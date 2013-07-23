@@ -10,7 +10,7 @@ if 'upload' in sys.argv:
 
 
 setup(name = 'proptools',
-      description = 'Various useful property subtypes.',
+      description = 'Some property subtypes: LazyProperty, TypedProperty, SetOnceProperty',
       url = 'https://github.org/nejucomo/proptools',
       license = 'GPLv3',
       version = '0.1',
