@@ -1,6 +1,12 @@
 #! /usr/bin/env python
 
+import sys
 from setuptools import setup
+
+
+if 'upload' in sys.argv:
+    if '--sign' not in sys.argv and sys.argv[1:] != ['upload', '--help']:
+        raise SystemExit('Refusing to upload unsigned packages.')
 
 
 setup(
