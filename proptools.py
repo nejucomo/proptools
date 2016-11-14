@@ -80,7 +80,7 @@ class StatefulPropertyBase (property):
     def _handleMissingValue(self, instance):
         """Override this to customize missing value behavior."""
         raise AttributeError(
-            '%r object has no such attribute.' % (
+            '{!r} object has no such attribute.'.format(
                 type(instance).__name__,
             )
         )
@@ -119,9 +119,9 @@ class TypedProperty (StatefulPropertyBase):
             self._values[instance] = value
         else:
             raise TypeError(
-                'Property values must be instances of %r; not %r' % (
+                'Property values must be instances of {!r}; not {!r}'.format(
                     self.type,
-                    type(value)
+                    type(value),
                 )
             )
 
@@ -130,7 +130,7 @@ class TypedProperty (StatefulPropertyBase):
             del self._values[instance]
         except KeyError:
             raise AttributeError(
-                '%r object has no such attribute.' % (
+                '{!r} object has no such attribute.'.format(
                     type(instance).__name__,
                 )
             )
@@ -167,7 +167,7 @@ class SetOnceProperty (StatefulPropertyBase):
             self._values[instance] = value
         else:
             raise AttributeError(
-                'SetOnceProperty already set to: %r' % (
+                'SetOnceProperty already set to: {!r}'.format(
                     value,
                 )
             )
