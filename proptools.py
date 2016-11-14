@@ -49,15 +49,15 @@ Computing the greeting.
 """
 
 
-__all__ = ['LazyProperty', 'TypedProperty', 'SetOnceProperty']
-
 import unittest
 from weakref import WeakKeyDictionary
 
+__all__ = ['LazyProperty', 'TypedProperty', 'SetOnceProperty']
 
 
 class StatefulPropertyBase (property):
-    """Stores property values in an internally tracked WeakKeyDictionary, keyed on the instance.
+    """
+    Store property values a WeakKeyDictionary, keyed on the instance.
 
     It is mainly useful as a base class, or when for whatever reason
     you want a property that is not stored in the instance __dict__.
@@ -79,15 +79,22 @@ class StatefulPropertyBase (property):
 
     def _handleMissingValue(self, instance):
         """Override this to customize missing value behavior."""
-        raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
-
+        raise AttributeError(
+            '%r object has no such attribute.' % (
+                type(instance).__name__,
+            )
+        )
 
 
 class LazyProperty (StatefulPropertyBase):
-    """A readonly property that's generated from the maker function on first lookup."""
+    """
+    A readonly property that's generated from maker on first lookup.
+    """
 
     def __init__(self, maker):
-        """maker is a function which takes an instance as an argument and returns the property's value."""
+        """
+        maker is a function mapping an instance to the property's value.
+        """
         StatefulPropertyBase.__init__(self)
         self.maker = maker
 
@@ -97,9 +104,10 @@ class LazyProperty (StatefulPropertyBase):
         return value
 
 
-
 class TypedProperty (StatefulPropertyBase):
-    """A property that raises TypeError if any assigned value is not an instance of type."""
+    """
+    A property that raises TypeError if an assigned value's type doesn't match.
+    """
 
     def __init__(self, type):
         """type constraints the type of assigned values."""
@@ -110,23 +118,39 @@ class TypedProperty (StatefulPropertyBase):
         if isinstance(value, self.type):
             self._values[instance] = value
         else:
-            raise TypeError('Property values must be instances of %r; not %r' % (self.type, type(value)))
+            raise TypeError(
+                'Property values must be instances of %r; not %r' % (
+                    self.type,
+                    type(value)
+                )
+            )
 
     def __delete__(self, instance):
         try:
             del self._values[instance]
         except KeyError:
-            raise AttributeError('%r object has no such attribute.' % (type(instance).__name__,))
-
+            raise AttributeError(
+                '%r object has no such attribute.' % (
+                    type(instance).__name__,
+                )
+            )
 
 
 class SetOnceProperty (StatefulPropertyBase):
-    """A property that can be assigned only once; subsequent assignements raise AttributeError."""
+    """
+    A property that can be assigned once.
 
-    _NoDefault = object() # Sentinel
+    Subsequent assignments raise AttributeError.
+    """
+
+    _NoDefault = object()  # Sentinel
 
     def __init__(self, default=_NoDefault):
-        """If a default is given, the property has the default value unless it is otherwise assigned."""
+        """
+        If default is given, reads return that value initially.
+
+        If not, early reads are AttributeErrors.
+        """
         StatefulPropertyBase.__init__(self)
         self._default = default
 
@@ -142,14 +166,17 @@ class SetOnceProperty (StatefulPropertyBase):
         except KeyError:
             self._values[instance] = value
         else:
-            raise AttributeError('SetOnceProperty already set to: %r' % (value,))
-
+            raise AttributeError(
+                'SetOnceProperty already set to: %r' % (
+                    value,
+                )
+            )
 
 
 # unittests:
 class LazyPropertyTests (unittest.TestCase):
     def setUp(self):
-        testcase = self # For the closure
+        testcase = self  # For the closure
         testcase.foocount = 0
 
         class C (object):
@@ -170,7 +197,6 @@ class LazyPropertyTests (unittest.TestCase):
 
     def test_classprop(self):
         self.assertIsInstance(self.C.foo, LazyProperty)
-
 
 
 class TypedPropertyTests (unittest.TestCase):
@@ -210,7 +236,6 @@ class TypedPropertyTests (unittest.TestCase):
         self.assertIsInstance(self.C.i, TypedProperty)
 
 
-
 class SetOncePropertyTests (unittest.TestCase):
     def setUp(self):
         class C (object):
@@ -224,7 +249,13 @@ class SetOncePropertyTests (unittest.TestCase):
         for attrname in ['nodef', 'withdef']:
             setattr(self.obj, attrname, 42)
             self.assertEqual(42, getattr(self.obj, attrname))
-            self.assertRaises(AttributeError, setattr, self.obj, attrname, "foo")
+            self.assertRaises(
+                AttributeError,
+                setattr,
+                self.obj,
+                attrname,
+                "foo",
+            )
             self.assertEqual(42, getattr(self.obj, attrname))
 
     def test_not_set_no_default_AttributeError(self):
@@ -234,8 +265,5 @@ class SetOncePropertyTests (unittest.TestCase):
         self.assertEqual('the default value', self.obj.withdef)
 
 
-
 if __name__ == '__main__':
     unittest.main()
-
-
