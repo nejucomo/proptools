@@ -9,13 +9,15 @@ if 'upload' in sys.argv:
         raise SystemExit('Refusing to upload unsigned packages.')
 
 
+pkg = 'proptools'
+
 setup(
-    name='proptools',
+    name=pkg,
     description='Property types: LazyProperty, TypedProperty, SetOnceProperty',
-    url='https://github.org/nejucomo/proptools',
+    url='https://github.org/nejucomo/{}'.format(pkg),
     license='MIT (see LICENSE.txt)',
     version='0.2.dev0',
     author='Nathan Wilcox',
     author_email='nejucomo@gmail.com',
-    py_modules=['proptools'],
+    py_modules=[pkg],
 )
